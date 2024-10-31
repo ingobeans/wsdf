@@ -1,0 +1,24 @@
+[
+    [
+        "hello there!",[
+            ["hi how are you?",2],
+            ["hi tell me, what do you think about the king",3],
+            ["here, have some gold","give gold 5 4"]
+        ]
+    ],
+    [
+        "im good thanks, bye!",[
+            ["bye",-1]
+        ]
+    ],
+    [
+        "i think hes evil",[
+            ["bye",-1]
+        ]
+    ],
+    [
+        "thanks mate",[
+            ["bye",-1]
+        ]
+    ]
+]
