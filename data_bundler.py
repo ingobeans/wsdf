@@ -29,6 +29,10 @@ if not os.path.isdir("data/"):
     print("error: no data dir!")
     quit()
 
+yellow = "\033[1;33m"
+green = "\033[0;32m"
+endc = "\033[0m"
+
 text = "--wsdf data\n\n"
 for file in os.listdir("data/"):
     data = None
@@ -36,7 +40,7 @@ for file in os.listdir("data/"):
         with open(os.path.join("data",file), "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception as e:
-        print(f"Error: {e}\n{file} is not a valid data object!")
+        print(f"{yellow}{file} is not a valid data object!{endc} ({e})")
         continue
 
     wsdf = encode_to_wsdf(data)
@@ -44,4 +48,4 @@ for file in os.listdir("data/"):
 
 print(text)
 pyperclip.copy(text)
-print("\n\033[0;32m(copied to clipboard)\033[0m")
+print(f"\n{green}(copied to clipboard){endc}")
