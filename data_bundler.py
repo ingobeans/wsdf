@@ -13,7 +13,7 @@ def encode_to_wsdf(data:list, delimeter_index=0)->str:
         else:
             found = [char for char in delimeters if char in str(d)]
             if found:
-                print(f"{red}error: value '{d}' contains entry in delimeters array ('{','.join(found)}')! edit this value or the delimeters array")
+                raise ValueError(f"Value '{d}' contains entry in delimeters array ('{','.join(found)}')! Edit this value or the delimeters array")
                 quit()
             encoded += str(d)+delimeters[delimeter_index]
     return encoded
@@ -43,6 +43,10 @@ endc = "\033[0m"
 text = "--wsdf data\n\ndelimeters={"
 for delimeter in delimeters:
     text += f'"{delimeter}",'
+
+    if len(delimeter) != 1:
+        raise ValueError(f"Delimeter '{delimeter}' is not of length 1. Because of pico-8's split function, delimeters must be one of length to properly work.")
+
 text = text[:-1]+"}\n"
 
 for file in os.listdir("data/"):
