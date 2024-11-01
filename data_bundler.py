@@ -12,7 +12,6 @@ def encode_to_wsdf(data:list, delimeter_index=0)->str:
             encoded += encode_to_wsdf(d,delimeter_index+1)+delimeters[delimeter_index]
         else:
             encoded += str(d)+delimeters[delimeter_index]
-    encoded = encoded[:-1]
     return encoded
 
 def decode_from_wsdf(data:str, delimeter_index=0)->list:
@@ -21,7 +20,10 @@ def decode_from_wsdf(data:str, delimeter_index=0)->list:
         raise ValueError("Delimeter out of range! Add more delimeters for this deep data!")
 
     for i,c in enumerate(decoded):
-        if any((cc in delimeters) for cc in c):
+        # remove last element
+        if i == len(decoded)-1:
+            decoded.remove(c)
+        elif delimeters[delimeter_index+1] in c:
             decoded[i] = decode_from_wsdf(c,delimeter_index+1)
     return decoded
 
@@ -44,7 +46,7 @@ for file in os.listdir("data/"):
         continue
 
     wsdf = encode_to_wsdf(data)
-    text += f"{file.split('.')[0]} = decode_wsdf(\"{wsdf}\")\n"
+    text += f"{file.split('.')[0]} = decode_wsdf(\"{wsdf}\",1)\n"
 
 print(text)
 pyperclip.copy(text)

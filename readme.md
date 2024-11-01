@@ -5,9 +5,9 @@ it stores only arrays, containing subarrays, strings and numbers.
 
 **basically a cheap way to bundle lots of data!**
 
-the loader itself is as of now: 84 tokens
+the loader itself is as of now: 73 tokens
 
-the data it loads will only ever be a single token as it is represented as a string.
+each array it loads will be a fixed 6 tokens, no matter the array size. these 6 tokens include the variable definition and decoding.
 
 use the python script to one or multiple arrays to wsdf.
 
@@ -34,23 +34,16 @@ and you will have variables defined with the data. the variable names will be th
 
 delimeters={"#","%",">","<","=",";","*"}
 
-function has_delimeter(string)
-	for c in all(split(string,"")) do
-		for d in all(delimeters) do
-			if d == c then
-				return true
-			end
-		end
-	end
-	return false
-end
-
 function decode_wsdf(data,del_id)
-	del_id = del_id or 1
 	local decoded = split(data,delimeters[del_id],true)
 	for k,c in ipairs(decoded) do
-		if has_delimeter(c) then
-			decoded[k] = decode_wsdf(c,del_id+1)
+		if k == #decoded then
+			del(decoded,c)
+		end
+		for cc in all(split(c,"")) do
+			if cc == delimeters[del_id+1] then
+				decoded[k] = decode_wsdf(c,del_id+1)
+			end
 		end
 	end
 	return decoded
