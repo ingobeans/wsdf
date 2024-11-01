@@ -13,8 +13,6 @@ use the python script to one or multiple arrays to wsdf.
 
 note that: wsdf is built on multiple delimeters, i.e. none of the characters specified as delimeters in data_bundler.py can be used in the data they hold.
 
-also note: if you want to change which delimeters are used, make sure to change both in the python script and in the lua code.
-
 # usage
 
 add the install snippet to your code
@@ -31,8 +29,6 @@ and you will have variables defined with the data. the variable names will be th
 
 ```lua
 --wsdf loader
-
-delimeters={"#","%",">","<","=",";","*"}
 
 function decode_wsdf(data,del_id)
 	local decoded = split(data,delimeters[del_id],true)

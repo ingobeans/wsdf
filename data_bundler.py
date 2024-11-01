@@ -13,7 +13,7 @@ def encode_to_wsdf(data:list, delimeter_index=0)->str:
         else:
             found = [char for char in delimeters if char in str(d)]
             if found:
-                print(f"{red}error: value '{d}' contains entry in delimeters array ('{','.join(found)}')! edit this value or the delimeters array (if you edit the delimeters array make sure to change it in the lua code as well)")
+                print(f"{red}error: value '{d}' contains entry in delimeters array ('{','.join(found)}')! edit this value or the delimeters array")
                 quit()
             encoded += str(d)+delimeters[delimeter_index]
     return encoded
@@ -40,7 +40,11 @@ yellow = "\033[1;33m"
 green = "\033[0;32m"
 endc = "\033[0m"
 
-text = "--wsdf data\n\n"
+text = "--wsdf data\n\ndelimeters={"
+for delimeter in delimeters:
+    text += f'"{delimeter}",'
+text = text[:-1]+"}\n"
+
 for file in os.listdir("data/"):
     data = None
     try:
