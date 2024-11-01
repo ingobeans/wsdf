@@ -11,8 +11,9 @@ def encode_to_wsdf(data:list, delimeter_index=0)->str:
         if type(d) == list:
             encoded += encode_to_wsdf(d,delimeter_index+1)+delimeters[delimeter_index]
         else:
-            if any(char in text for char in str(d)):
-                print(f"{red}error: value '{d}' contains entry in delimeters array! edit this value or the delimeters array (if you edit the delimeters array make sure to change it in the lua code as well)")
+            found = [char for char in delimeters if char in str(d)]
+            if found:
+                print(f"{red}error: value '{d}' contains entry in delimeters array ('{','.join(found)}')! edit this value or the delimeters array (if you edit the delimeters array make sure to change it in the lua code as well)")
                 quit()
             encoded += str(d)+delimeters[delimeter_index]
     return encoded
