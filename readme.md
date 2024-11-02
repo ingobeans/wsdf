@@ -9,7 +9,7 @@ the loader itself is as of now: 73 tokens
 
 each array it loads will be a fixed 6 tokens, no matter the array size. these 6 tokens include the variable definition and decoding.
 
-use the python script to one or multiple arrays to wsdf.
+use the python script to encode one or multiple arrays to wsdf.
 
 note that: wsdf is built on multiple delimeters, i.e. none of the characters specified as delimeters in data_bundler.py can be used in the data they hold.
 
