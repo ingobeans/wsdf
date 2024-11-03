@@ -4,13 +4,13 @@ __lua__
 --wsdf loader
 
 function decode_wsdf(data,del_id)
-	local decoded = split(data,delimeters[del_id],true)
+	local decoded = split(data,delimiters[del_id],true)
 	for k,c in ipairs(decoded) do
 		if k == #decoded then
 			del(decoded,c)
 		end
 		for cc in all(split(c,"")) do
-			if cc == delimeters[del_id+1] then
+			if cc == delimiters[del_id+1] then
 				decoded[k] = decode_wsdf(c,del_id+1)
 			end
 		end
@@ -20,9 +20,10 @@ end
 -->8
 --wsdf data
 
-delimeters={"#","%",">","<","=",";","*"}
-dialogue = decode_wsdf("hello there!%hi how are you?<2<>hi tell me, what do you think about the king<3<>here, have some gold<give gold 5 4<>%#im good thanks, bye!%bye<-1<>%#i think hes evil%bye<-1<>%#thanks mate%bye<-1<>%#",1)
-eatable_things = decode_wsdf("apples%pears%oranges%bananas%pineapples%kiwis%#tomatoes%cucumbers%carrots%#bread%rice%pasta%#",1)
+delimiters='a'
+delimiters=decode_wsdf('#a%a>a<a=a;a*a',1)
+dialogue=decode_wsdf("hello there!%hi how are you?<2<>hi tell me, what do you think about the king<3<>here, have some gold<give gold 5 4<>%#im good thanks, bye!%bye<-1<>%#i think hes evil%bye<-1<>%#thanks mate%bye<-1<>%#",1)
+eatable_things=decode_wsdf("apples%pears%oranges%bananas%pineapples%kiwis%#tomatoes%cucumbers%carrots%#bread%rice%pasta%#",1)
 
 -->8
 --example code / usage

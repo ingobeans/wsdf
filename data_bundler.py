@@ -1,53 +1,67 @@
 import json, pyperclip, os
 
-delimeters=["#","%",">","<","=",";","*"]
+delimiters=["#","%",">","<","=",";","*"]
 
-def encode_to_wsdf(data:list, delimeter_index=0)->str:
+def encode_to_wsdf(data:list, delimiters, delimiter_index=0)->str:
     encoded = ""
-    if delimeter_index >= len(delimeters):
-        raise ValueError("Delimeter out of range! Add more delimeters for this deep data!")
+    if delimiter_index >= len(delimiters):
+        raise ValueError("delimiter out of range! Add more delimiters for this deep data!")
     
     for d in data:
         if type(d) == list:
-            encoded += encode_to_wsdf(d,delimeter_index+1)+delimeters[delimeter_index]
+            encoded += encode_to_wsdf(d,delimiters,delimiter_index+1)+delimiters[delimiter_index]
         else:
-            found = [char for char in delimeters if char in str(d)]
+            found = [char for char in delimiters if char in str(d)]
             if found:
-                raise ValueError(f"Value '{d}' contains entry in delimeters array ('{','.join(found)}')! Edit this value or the delimeters array")
-                quit()
-            encoded += str(d)+delimeters[delimeter_index]
+                raise ValueError(f"Value '{d}' contains entry in delimiters array ('{','.join(found)}')! Edit this value or the delimiters array")
+            encoded += str(d)+delimiters[delimiter_index]
     return encoded
 
-def decode_from_wsdf(data:str, delimeter_index=0)->list:
-    decoded = data.split(delimeters[delimeter_index])
-    if delimeter_index >= len(delimeters):
-        raise ValueError("Delimeter out of range! Add more delimeters for this deep data!")
+def decode_from_wsdf(data:str, delimiters, delimiter_index=0)->list:
+    decoded = data.split(delimiters[delimiter_index])
+    if delimiter_index >= len(delimiters):
+        raise ValueError("delimiter out of range! Add more delimiters for this deep data!")
 
     for i,c in enumerate(decoded):
         # remove last element
         if i == len(decoded)-1:
             decoded.remove(c)
-        elif delimeters[delimeter_index+1] in c:
-            decoded[i] = decode_from_wsdf(c,delimeter_index+1)
+        elif delimiters[delimiter_index+1] in c:
+            decoded[i] = decode_from_wsdf(c,delimiter_index+1)
     return decoded
 
 if not os.path.isdir("data/"):
     print("error: no data dir!")
     quit()
 
+def get_temporary_delimiter(existing_delimiters):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    
+    for letter in alphabet:
+        if letter not in existing_delimiters:
+            return letter
+    return None
+
 red = "\033[0;31m"
 yellow = "\033[1;33m"
 green = "\033[0;32m"
 endc = "\033[0m"
 
-text = "--wsdf data\n\ndelimeters={"
-for delimeter in delimeters:
-    text += f'"{delimeter}",'
+# this code is to encode the delimiters array itself as wsdf and load it using a temporary delimiter
+# if more than 6 delimiters (only then is that more efficient)
 
-    if len(delimeter) != 1:
-        raise ValueError(f"Delimeter '{delimeter}' is not of length 1. Because of pico-8's split function, delimeters must be one of length to properly work.")
+if len(delimiters) > 6:
+    temporary_delimiter = get_temporary_delimiter(delimiters)
+    text = "--wsdf data\n\ndelimiters='"+temporary_delimiter+"'\ndelimiters=decode_wsdf('"+encode_to_wsdf(delimiters, [temporary_delimiter])+"',1)\n"
+else:
+    text = "--wsdf data\n\ndelimiters={"
+    for delimiter in delimiters:
+        text += f'"{delimiter}",'
 
-text = text[:-1]+"}\n"
+        if len(delimiter) != 1:
+            raise ValueError(f"delimiter '{delimiter}' is not of length 1. Because of pico-8's split function, delimiters must be one of length to properly work.")
+
+    text = text[:-1]+"}\n"
 
 for file in os.listdir("data/"):
     data = None
@@ -58,8 +72,8 @@ for file in os.listdir("data/"):
         print(f"{yellow}{file} is not a valid data object!{endc} ({e})")
         continue
 
-    wsdf = encode_to_wsdf(data)
-    text += f"{file.split('.')[0]} = decode_wsdf(\"{wsdf}\",1)\n"
+    wsdf = encode_to_wsdf(data,delimiters)
+    text += f"{file.split('.')[0]}=decode_wsdf(\"{wsdf}\",1)\n"
 
 print(text)
 pyperclip.copy(text)
