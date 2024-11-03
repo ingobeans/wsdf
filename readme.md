@@ -31,13 +31,13 @@ and you will have variables defined with the data. the variable names will be th
 --wsdf loader
 
 function decode_wsdf(data,del_id)
-	local decoded = split(data,delimeters[del_id],true)
+	local decoded = split(data,delimiters[del_id],true)
 	for k,c in ipairs(decoded) do
 		if k == #decoded then
 			del(decoded,c)
 		end
 		for cc in all(split(c,"")) do
-			if cc == delimeters[del_id+1] then
+			if cc == delimiters[del_id+1] then
 				decoded[k] = decode_wsdf(c,del_id+1)
 			end
 		end
