@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
---wsdf loader
+--wsdf
 
 function decode_wsdf(data,del_id)
 	local decoded = split(data,delimiters[del_id],true)
@@ -17,7 +17,7 @@ function decode_wsdf(data,del_id)
 	end
 	return decoded
 end
--->8
+
 --wsdf data
 
 delimiters='a'

@@ -2,6 +2,25 @@ import json, pyperclip, os
 
 delimiters=["#","%",">","<","=",";","*"]
 
+text = '''--wsdf
+
+function decode_wsdf(data,del_id)
+	local decoded = split(data,delimiters[del_id],true)
+	for k,c in ipairs(decoded) do
+		if k == #decoded then
+			del(decoded,c)
+		end
+		for cc in all(split(c,"")) do
+			if cc == delimiters[del_id+1] then
+				decoded[k] = decode_wsdf(c,del_id+1)
+			end
+		end
+	end
+	return decoded
+end
+
+'''
+
 def encode_to_wsdf(data:list, delimiters, delimiter_index=0)->str:
     encoded = ""
     if delimiter_index >= len(delimiters):
@@ -52,9 +71,9 @@ endc = "\033[0m"
 
 if len(delimiters) > 6:
     temporary_delimiter = get_temporary_delimiter(delimiters)
-    text = "--wsdf data\n\ndelimiters='"+temporary_delimiter+"'\ndelimiters=decode_wsdf('"+encode_to_wsdf(delimiters, [temporary_delimiter])+"',1)\n"
+    text += "--wsdf data\n\ndelimiters='"+temporary_delimiter+"'\ndelimiters=decode_wsdf('"+encode_to_wsdf(delimiters, [temporary_delimiter])+"',1)\n"
 else:
-    text = "--wsdf data\n\ndelimiters={"
+    text += "--wsdf data\n\ndelimiters={"
     for delimiter in delimiters:
         text += f'"{delimiter}",'
 
