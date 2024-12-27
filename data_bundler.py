@@ -53,34 +53,19 @@ if not os.path.isdir("data/"):
     print("error: no data dir!")
     quit()
 
-def get_temporary_delimiter(existing_delimiters):
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
-    
-    for letter in alphabet:
-        if letter not in existing_delimiters:
-            return letter
-    return None
-
 red = "\033[0;31m"
 yellow = "\033[1;33m"
 green = "\033[0;32m"
 endc = "\033[0m"
 
-# this code is to encode the delimiters array itself as wsdf and load it using a temporary delimiter
-# if more than 6 delimiters (only then is that more efficient)
+text += "--wsdf data\n\ndelimiters='"
+for delimiter in delimiters:
+    text += delimiter
 
-if len(delimiters) > 6:
-    temporary_delimiter = get_temporary_delimiter(delimiters)
-    text += "--wsdf data\n\ndelimiters='"+temporary_delimiter+"'\ndelimiters=decode_wsdf('"+encode_to_wsdf(delimiters, [temporary_delimiter])+"',1)\n"
-else:
-    text += "--wsdf data\n\ndelimiters={"
-    for delimiter in delimiters:
-        text += f'"{delimiter}",'
+    if len(delimiter) != 1:
+        raise ValueError(f"delimiter '{delimiter}' is not of length 1. Because of pico-8's split function, delimiters must be one of length to properly work.")
 
-        if len(delimiter) != 1:
-            raise ValueError(f"delimiter '{delimiter}' is not of length 1. Because of pico-8's split function, delimiters must be one of length to properly work.")
-
-    text = text[:-1]+"}\n"
+text = text[:-1]+"'\n"
 
 for file in os.listdir("data/"):
     data = None
