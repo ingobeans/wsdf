@@ -12,11 +12,11 @@ function decode_wsdf(data,del_id)
 		end
 		for cc in all(split(c,"")) do
 			if cc == delimiters[del_id+1] then
-				decoded[k] = decode_wsdf(c,del_id+1)
+				decoded[k] = pack(decode_wsdf(c,del_id+1))
 			end
 		end
 	end
-	return decoded
+	return unpack(decoded)
 end
 
 '''
@@ -66,6 +66,8 @@ for delimiter in delimiters:
         raise ValueError(f"delimiter '{delimiter}' is not of length 1. Because of pico-8's split function, delimiters must be one of length to properly work.")
 
 text = text[:-1]+"'\n"
+to_encode = []
+names = []
 
 for file in os.listdir("data/"):
     data = None
@@ -75,9 +77,11 @@ for file in os.listdir("data/"):
     except Exception as e:
         print(f"{yellow}{file} is not a valid data object!{endc} ({e})")
         continue
+    to_encode.append(data)
+    names.append(file.split('.')[0])
 
-    wsdf = encode_to_wsdf(data,delimiters)
-    text += f"{file.split('.')[0]}=decode_wsdf(\"{wsdf}\",1)\n"
+wsdf = encode_to_wsdf(to_encode,delimiters)
+text += f"{','.join(names)}=decode_wsdf(\"{wsdf}\",1)\n"
 
 print(text)
 pyperclip.copy(text)

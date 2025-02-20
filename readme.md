@@ -5,9 +5,9 @@ it stores only arrays, containing subarrays, strings and numbers.
 
 **basically a cheap way to bundle lots of data!**
 
-the loader itself is as of now: 66 tokens
+the loader itself is as of now: 67 tokens
 
-each array it loads will be a fixed 6 tokens, no matter the array size. these 6 tokens include the variable definition and decoding.
+each array it loads will be a fixed 1 token, no matter the array size. all arrays loaded will be automatically assigned to a variable by the same name.
 
 use the python script to encode one or multiple arrays to wsdf.
 
