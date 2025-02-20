@@ -5,18 +5,18 @@ delimiters=["#","%",">","<","=",";","*"]
 text = '''--wsdf
 
 function decode_wsdf(data,del_id)
-	local decoded = split(data,delimiters[del_id],true)
+	local decoded = split(data,delimiters[del_id])
 	for k,c in ipairs(decoded) do
 		if k == #decoded then
 			del(decoded,c)
 		end
 		for cc in all(split(c,"")) do
 			if cc == delimiters[del_id+1] then
-				decoded[k] = pack(decode_wsdf(c,del_id+1))
+				decoded[k] = decode_wsdf(c,del_id+1)
 			end
 		end
 	end
-	return unpack(decoded)
+	return decoded
 end
 
 '''
@@ -24,7 +24,7 @@ end
 def encode_to_wsdf(data:list, delimiters, delimiter_index=0)->str:
     encoded = ""
     if delimiter_index >= len(delimiters):
-        raise ValueError("delimiter out of range! Add more delimiters for this deep data!")
+        raise ValueError("Delimiter out of range! Add more delimiters for this deep data!")
     
     for d in data:
         if type(d) == list:
@@ -39,7 +39,7 @@ def encode_to_wsdf(data:list, delimiters, delimiter_index=0)->str:
 def decode_from_wsdf(data:str, delimiters, delimiter_index=0)->list:
     decoded = data.split(delimiters[delimiter_index])
     if delimiter_index >= len(delimiters):
-        raise ValueError("delimiter out of range! Add more delimiters for this deep data!")
+        raise ValueError("Delimiter out of range! Add more delimiters for this deep data!")
 
     for i,c in enumerate(decoded):
         # remove last element
@@ -49,21 +49,21 @@ def decode_from_wsdf(data:str, delimiters, delimiter_index=0)->list:
             decoded[i] = decode_from_wsdf(c,delimiter_index+1)
     return decoded
 
-if not os.path.isdir("data/"):
-    print("error: no data dir!")
-    quit()
-
 red = "\033[0;31m"
 yellow = "\033[1;33m"
 green = "\033[0;32m"
 endc = "\033[0m"
+
+if not os.path.isdir("data/"):
+    print(f"{red}error: no data dir!{endc}")
+    quit()
 
 text += "--wsdf data\n\ndelimiters='"
 for delimiter in delimiters:
     text += delimiter
 
     if len(delimiter) != 1:
-        raise ValueError(f"delimiter '{delimiter}' is not of length 1. Because of pico-8's split function, delimiters must be one of length to properly work.")
+        raise ValueError(f"Delimiter '{delimiter}' is not of length 1. Because of pico-8's split function, delimiters must be one of length to properly work.")
 
 text = text[:-1]+"'\n"
 to_encode = []
@@ -81,7 +81,7 @@ for file in os.listdir("data/"):
     names.append(file.split('.')[0])
 
 wsdf = encode_to_wsdf(to_encode,delimiters)
-text += f"{','.join(names)}=decode_wsdf(\"{wsdf}\",1)\n"
+text += f"{','.join(names)}=unpack(decode_wsdf(\"{wsdf}\",1))\n"
 
 print(text)
 pyperclip.copy(text)

@@ -5,7 +5,7 @@ it stores only arrays, containing subarrays, strings and numbers.
 
 **basically a cheap way to bundle lots of data!**
 
-the loader itself is as of now: 67 tokens
+the loader itself is as of now: 68 tokens
 
 each array it loads will be a fixed 1 token, no matter the array size. all arrays loaded will be automatically assigned to a variable by the same name.
 
